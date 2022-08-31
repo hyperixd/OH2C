@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 int main()
 {
     std::cout << "How many numbers would you like to have? ";
@@ -15,13 +14,30 @@ int main()
 
     while(game_lft >= 1)    // Printing numbers when games left is bigger that 0
     {
-        if(game_num % 3 == 0)   // If our number is divisible with 3, print "zip"
+        if(game_num % 3 == 0 && game_num % 7 == 0)  // If our number is divisible with 3 and 7, print "zip boing"
+        {
+            std::cout << "zip boing" << std::endl;
+            game_num += 1;
+            game_lft -= 1;
+            continue;
+        }
+
+        else if(game_num % 3 == 0)   // If our number is divisible with 3, print "zip"
         {
             std::cout << "zip" << std::endl;
             game_num += 1;
             game_lft -= 1;
             continue;
         }
+
+        else if(game_num % 7 == 0)  // If our number is divisible with 7, print "boing"
+        {
+            std::cout << "boing" << std::endl;
+            game_num += 1;
+            game_lft -= 1;
+            continue;
+        }
+
         std::cout << game_num << std::endl; //Printing game number.
         game_num += 1;
         game_lft -= 1;
