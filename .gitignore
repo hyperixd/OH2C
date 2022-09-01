@@ -2,3 +2,5 @@
 build-*
 templates/*
 examples/*
+.vscode
+*.exe
