@@ -15,7 +15,7 @@ void produce_random_numbers(unsigned int lower, unsigned int upper)
     uniform_int_distribution<int> distr(lower, upper);
     while(repeat != "q")
     {
-        cout << "Your drawn random number is " << distr(gen) << endl;
+        cout << endl << "Your drawn random number is " << distr(gen) << endl;
         cout << "Press q to quit or any other key to continue: ";
         cin >> repeat;
     }
