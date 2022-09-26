@@ -16,7 +16,7 @@ void Book::print() const
     std::cout << auth_ << " : " << nimi_ << std::endl;
     if(loaned_)
     {
-        std::cout << "- loaned: " << "xxxxxx" << std::endl
+        std::cout << "- loaned: " << "x" << std::endl
         << "- to be returned: " << "xX__X_X_X__X" << std::endl;
     }
     else
@@ -36,19 +36,19 @@ void Book::loan(Date today)
     else
     {
         loaned_ = true;
-        Date loan_day(today);
-        loan_day.advance(28);
-        Date loan_back(loan_day);
-
+        Date loan_day_(today);
+        Date loan_back_(loan_day_);
+        loan_back_.advance(28);
+        int i = 0;
     }
 }
 
 void Book::renew()
 {
-
+    int i = 0;
 }
 
 void Book::give_back()
 {
-
+    int i = 0;
 }

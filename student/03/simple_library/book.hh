@@ -21,8 +21,8 @@ private:
     std::string auth_;
     std::string nimi_;
     bool loaned_;
-    std::string loan_day_;
-    std::string loan_back_;
+    Date loan_day_();
+    Date loan_back_();
 };
 
 #endif // BOOK_HH
