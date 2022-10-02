@@ -83,7 +83,6 @@ bool is_geometric_series(std::vector <int>& ints)
         if (ints.at(i) != 0 && ints.at(i + 1) / ints.at(i) == sub)
         {
             
-            std::cout << ints.at(i + 1) / ints.at(i) << std::endl;
             continue;
         }
         else
