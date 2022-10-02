@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 
 // Reads as many integers as the parameter count indicates
@@ -12,11 +13,86 @@ void read_integers(std::vector< int >& ints, int count)
     {
         std::cin >> new_integer;
         // TODO: Implement your solution here
+        ints.push_back(new_integer);
+        
     }
 }
 
 // TODO: Implement your solution here
 
+bool same_values(std::vector < int >& ints)
+{
+    if ( std::equal(ints.begin() + 1, ints.end(), ints.begin()) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+bool is_ordered_non_strict_ascending(std::vector <int>& ints)
+{
+    return std::is_sorted(ints.begin(), ints.end());
+    
+}
+
+bool is_arithmetic_series(std::vector <int>& ints)
+{
+    int how_many = ints.size();
+    int sub = ints.at(how_many - 1) - ints.at(how_many - 2); 
+    for(int i = 0; i < how_many - 2; ++i)
+    {
+        if (ints.at(i + 1) - ints.at(i) == sub)
+        {
+            continue;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool is_geometric_series(std::vector <int>& ints)
+{
+    if(same_values(ints) == true && ints.at(0) == 0)
+    {
+        return false;
+    }
+    
+    int how_many = ints.size();
+   
+    if(ints.at(how_many - 2) == 0 && how_many == 2)
+    {
+        return false;
+    }
+
+
+    double sub = ints.at(how_many - 1) / ints.at(how_many - 2);
+
+    
+    
+    
+    
+    for(int i = 0; i < how_many - 2; ++i)
+    {
+        if (ints.at(i) != 0 && ints.at(i + 1) / ints.at(i) == sub)
+        {
+            
+            std::cout << ints.at(i + 1) / ints.at(i) << std::endl;
+            continue;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
 int main()
 {
