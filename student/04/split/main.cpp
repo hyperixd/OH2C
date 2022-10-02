@@ -36,13 +36,15 @@ std::vector<std::string> split(std::string line, char merkki, bool empty_space =
     {
         return pilkottu;
     }
-    else if(line != "")
+    else if(empty_space == true)
+    {
+        return pilkottu;
+    }
+    else
     {
         pilkottu.push_back(line);
-               
+        return pilkottu;
     }
-    return pilkottu; 
-
 }
 
 
