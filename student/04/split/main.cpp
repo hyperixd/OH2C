@@ -32,12 +32,17 @@ std::vector<std::string> split(std::string line, char merkki, bool empty_space =
         }
 
     }
-    if(line.size() != string::npos)
+    if(line.size() == string::npos)
     {
         return pilkottu;
     }
-    pilkottu.push_back(line);
-    return pilkottu;
+    else if(line != "")
+    {
+        pilkottu.push_back(line);
+               
+    }
+    return pilkottu; 
+
 }
 
 
