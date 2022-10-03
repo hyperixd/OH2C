@@ -1,6 +1,47 @@
 // TODO: Include your header file of the class describing a series of four colors
+
+
+/* Mastermind
+ *
+ * Kuvaus:
+ *   Ohjelma toteuttaa Mastermind-pelin. Pelissä annetaan tai arvotaan
+ * ensin salainen neljän värin sarja. Sama väri voi esiintyä sarjassa
+ * useita kertoja, mutta mikään neljästä positiosta ei voi olla tyhjä.
+ * Käyttäjä yrittää arvata, mitkä värit esiintyvät sarjassa ja missä
+ * järjestyksessä. Tätä varten käyttäjä antaa oman neljän värin sarjansa,
+ * ja ohjelma ilmoittaa, kuinka monta väriarvausta meni täysin oikein
+ * (oikea väri oikeassa positiossa) sekä kuinka monta arvausta meni
+ * pelkästään värin osalta oikein (oikea väri väärässä positiossa).
+ * Tämän jälkeen käyttäjä voi tehdä uuden arvauksen jne.
+ *   Aluksi käyttäjältä kysytään, täytetäänkö peliruudukko satunnaisesti
+ * arvottavilla väreillä vai käyttäjän luettelemilla väreillä.
+ * (Jälkimmäinen tapa ei ole kovin järkevä, mutta se on hyödyllinen
+ * testauksen kannalta.) Ensimmäisessä vaihtoehdossa käyttäjältä kysytään
+ * satunnaislukugeneraattorin siemenlukua ja jälkimmäisessä häntä
+ * pyydetään syöttämään neljä väriä (värien alkukirjaimet eli neljän
+ * merkin mittainen merkkijono).
+ *   Joka kierroksella käyttäjältä kysytään uutta arvausta. Peli päättyy
+ * pelaajan voittoon, jos arvaus menee jokaisen värin kohdalta täysin
+ * oikein. Peli päättyy pelaajan häviöön, jos hän ei ole arvannut oikein
+ * maksimimäärällä (10) arvauskertoja.
+ *   Ohjelma tarkistaa, että annetut värit kuuluvat sallittujen värien
+ * joukkoon. Pelin päättyessä kerrotaan, voittiko vai hävisikö pelaaja.
+ *
+ * Ohjelman kirjoittaja
+ * Nimi: August Laulainen
+ * Opiskelijanumero: 50077795
+ * Käyttäjätunnus: nbaula
+ * E-Mail: august.laulainen@tuni.fi
+ *
+ * Huomioita ohjelmasta ja sen toteutuksesta:
+ *
+ * */
+
+
 #include <iostream>
 #include <vector>
+#include <string>
+#include "colors.hh"
 
 using namespace std;
 
@@ -91,10 +132,10 @@ int main()
 {
     cout << INFO_TEXT << endl;
     print_line_with_char('*', INFO_TEXT.size());
-
+    Colors secret_colors({'B', 'R', 'Y', 'G', 'O', 'V'});
     // TODO: Declare an object for a color series (the secret one)
-    get_input(/* secret color series */);
-
+    //get_input(/* secret color series */);
+    secret_colors.random(1);
     // TODO: Play the game, i.e. repeatedly read a user given number series
     // and compare it with the secret one
 

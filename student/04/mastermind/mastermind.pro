@@ -4,4 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+        colors.cpp \
         main.cpp
+
+HEADERS += \
+    colors.hh
