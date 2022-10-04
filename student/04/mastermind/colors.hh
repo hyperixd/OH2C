@@ -11,12 +11,13 @@ class Colors
 {
 public:
     // Constructor
-    Colors(const vector<char>& varit);
+    Colors(const vector<char>& secret_colors);
 
     // Methods
     void game(string guess);
     void random(int seed);
-    void listed(string list);
+    bool is_listed(string list);
+    
 
 
 private:
@@ -27,7 +28,7 @@ private:
     vector<char> guess_;
     vector<char> secret_;
     vector<int> right_guess_;
-    const vector<char> varit_;
+    const vector<char> secret_colors_;
 
 };
 

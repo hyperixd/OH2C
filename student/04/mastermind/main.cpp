@@ -67,7 +67,7 @@ B = Blue, R = Red, Y = Yellow, G = Green, O = Orange, V = Violet";
 // Reads the input way, either random or listing way,
 // and fills the color series in the user-desired way.
 // Repeats the question until the user enters either R or L.
-void get_input(/* a color series as a reference parameter */)
+void get_input(Colors secret_color)
 {
     cout << "Enter an input way (R = random, L = list): ";
     string input_str = "";
@@ -77,7 +77,9 @@ void get_input(/* a color series as a reference parameter */)
         cout << "Enter a seed value: ";
         int seed = 0;
         cin >> seed;
-        // TODO: Fill color series randomly based on the seed value
+        
+
+        secret_color.random(seed);
     }
     else if(input_str == "L" or input_str == "l")
     {
@@ -87,9 +89,12 @@ void get_input(/* a color series as a reference parameter */)
             cout << "Enter four colors (four letters without spaces): ";
             string colors = "";
             cin >> colors;
-            // TODO:Fill color series based on the given string and check if
-            // the user gave the correct amount of allowed colors
-            // TODO: Update the boolean variable called accepted
+            if(secret_color.is_listed(colors))
+            {
+                accepted = true;
+            }
+
+            
         }
     }
     else
@@ -98,7 +103,7 @@ void get_input(/* a color series as a reference parameter */)
         // Below the function itself is called recursively, which makes the
         // above code executed until an acceptable input_str is given,
         // but instead you can enclose the above code inside a loop structure.
-        get_input(/* add here the original color series */);
+        get_input(secret_color);
     }
 }
 
@@ -134,8 +139,18 @@ int main()
     print_line_with_char('*', INFO_TEXT.size());
     Colors secret_colors({'B', 'R', 'Y', 'G', 'O', 'V'});
     // TODO: Declare an object for a color series (the secret one)
-    //get_input(/* secret color series */);
-    secret_colors.random(1);
+    get_input(secret_colors);
+    
+
+
+
+    //debug
+    cout << "yey" << endl;
+    //debug..................
+    //secret_colors.random(1);
+    //.......................
+
+
     // TODO: Play the game, i.e. repeatedly read a user given number series
     // and compare it with the secret one
 
