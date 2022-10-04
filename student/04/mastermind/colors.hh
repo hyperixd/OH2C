@@ -17,6 +17,7 @@ public:
     void game(string guess);
     void random(int seed);
     bool is_listed(string list);
+    bool input_check(string guess_two, bool format = true);
     
 
 
@@ -29,6 +30,7 @@ private:
     vector<char> secret_;
     vector<int> right_guess_;
     const vector<char> secret_colors_;
+    string secret_colors_string_;
 
 };
 
