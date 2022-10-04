@@ -185,7 +185,7 @@ int main()
     Colors secret_colors(sec_clr);
     // TODO: Declare an object for a color series (the secret one)
     get_input(secret_colors);
-    while(playtimes <= GUESS_MAX && win == false)
+    while(playtimes < GUESS_MAX && win == false)
     {
         win = play_game(secret_colors);
         playtimes++;
