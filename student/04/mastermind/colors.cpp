@@ -71,10 +71,10 @@ bool Colors::game(string guess)
     {
         if(secret_str_.find(guess_temp.at(x)) != string::npos)
         {
-            int k = secret_str_.find(guess_temp.at(x- remove_2 ));
+            int k = temp_sec.find(temp_guess.at(x- remove_2 ));
             temp_sec.erase(k,1);
             temp_guess.erase(x-remove_2,1);
-            already_removed++;
+            //already_removed++;
             remove_2++;
             almost_right_++;
             continue;
@@ -194,7 +194,7 @@ void Colors::print() const
     for(basic_string<char> evry_guess_idx : every_guess_)
     {
         int counter = 1;
-        cout << "| ";
+        cout << "|";
         for(auto sing_gues_idx : evry_guess_idx)
         {
             if(counter >= 5)
@@ -203,7 +203,7 @@ void Colors::print() const
             }
             else
             {
-                cout << sing_gues_idx << " ";
+                cout << " " << sing_gues_idx;
                 counter++;
             }
 

@@ -153,7 +153,11 @@ bool play_game(Colors& secret_colors)
         cout << "ROW> ";
 
         cin >> guess;
-        if(secret_colors.input_check(guess, false))
+        if(guess == "q" or guess == "Q")
+        {
+            exit(EXIT_SUCCESS);
+        }
+        else if(secret_colors.input_check(guess, false))
         {
             not_invalid = true;
         }
@@ -172,7 +176,7 @@ bool play_game(Colors& secret_colors)
 
 int main()
 {
-    int playtimes = 0;
+    unsigned int playtimes = 0;
     bool win = false;
     vector<char>sec_clr = {'B', 'R', 'Y', 'G', 'O', 'V'};
     vector<char> seccc = {};
@@ -181,7 +185,7 @@ int main()
     Colors secret_colors(sec_clr);
     // TODO: Declare an object for a color series (the secret one)
     get_input(secret_colors);
-    while(playtimes <= 10 && win == false)
+    while(playtimes <= GUESS_MAX && win == false)
     {
         win = play_game(secret_colors);
         playtimes++;
