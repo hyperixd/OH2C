@@ -14,11 +14,12 @@ public:
     Colors(const vector<char>& secret_colors);
 
     // Methods
-    void game(string guess);
+    bool game(string guess);
     void random(int seed);
     bool is_listed(string list);
     bool input_check(string guess_two, bool format = true);
-    
+    void print() const;
+
 
 
 private:
@@ -28,9 +29,12 @@ private:
     // Private methdos
     vector<char> guess_;
     vector<char> secret_;
-    vector<int> right_guess_;
+    string secret_str_;
+    int right_guess_ = 0;
+    int almost_right_ = 0;
     const vector<char> secret_colors_;
     string secret_colors_string_;
+
 
 };
 

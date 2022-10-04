@@ -121,13 +121,11 @@ void print_line_with_char(char c, unsigned int line_length)
 
 // Prints all color series.
 // (Not called in the template code.)
-void print_all(/* a vector including color series */)
+void print_all(string guess, Colors& secret_color)
 {
     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
-    //for(/* go through the vector */)
-    {
-        // TODO: print each vector element (color series)
-    }
+    cout << "| ";
+
     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
 }
 
@@ -136,8 +134,10 @@ void print_all(/* a vector including color series */)
 // On each round, all rows given so far are printed.
 
 
-void play_game(Colors& secret_colors)
+bool play_game(Colors& secret_colors)
 {
+    bool win = false;
+    bool all_right = false;
     string guess;
     bool not_invalid = false;
     while(not_invalid == false)
@@ -151,12 +151,25 @@ void play_game(Colors& secret_colors)
         }
     }
     
-    secret_colors.game(guess);
+
+
+
+        win = secret_colors.game(guess);
+
+
+
+        //play_game(secret_colors);
+        print_all(guess, secret_colors);
+        return win;
+
+    
 }
 
 
 int main()
 {
+    int playtimes = 0;
+    bool win = false;
     vector<char>sec_clr = {'B', 'R', 'Y', 'G', 'O', 'V'};
     vector<char> seccc = {};
     cout << INFO_TEXT << endl;
@@ -164,7 +177,19 @@ int main()
     Colors secret_colors(sec_clr);
     // TODO: Declare an object for a color series (the secret one)
     get_input(secret_colors);
-    play_game(secret_colors);
+    while(playtimes <= 10 && win == false)
+    {
+        win = play_game(secret_colors);
+        playtimes++;
+    }
+    if(win == false)
+    {
+        cout << "You lost: Maximum number of guesses done" << endl;
+    }
+    else
+    {
+        cout << "You won: Congratulations!" << endl;
+    }
 
 
     // TODO: Play the game, i.e. repeatedly read a user given number series
