@@ -34,6 +34,7 @@ private:
     int almost_right_ = 0;
     const vector<char> secret_colors_;
     string secret_colors_string_;
+    vector<string> every_guess_;
 
 
 };

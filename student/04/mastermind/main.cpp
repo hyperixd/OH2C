@@ -121,13 +121,21 @@ void print_line_with_char(char c, unsigned int line_length)
 
 // Prints all color series.
 // (Not called in the template code.)
-void print_all(string guess, Colors& secret_color)
+void print_all( Colors& secret_colors, bool win)
 {
     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
-    cout << "| ";
+
+    secret_colors.print();
+
+
+    //cout << "| ";
+
 
     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
+
+
 }
+
 
 // Implements the actual game loop, where user-given guesses are read
 // and compared to the secret row.
@@ -137,7 +145,7 @@ void print_all(string guess, Colors& secret_color)
 bool play_game(Colors& secret_colors)
 {
     bool win = false;
-    bool all_right = false;
+
     string guess;
     bool not_invalid = false;
     while(not_invalid == false)
@@ -151,15 +159,11 @@ bool play_game(Colors& secret_colors)
         }
     }
     
-
-
-
         win = secret_colors.game(guess);
-
-
-
-        //play_game(secret_colors);
-        print_all(guess, secret_colors);
+        
+         //play_game(secret_colors);
+        
+        print_all(secret_colors, win);
         return win;
 
     

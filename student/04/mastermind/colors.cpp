@@ -21,7 +21,7 @@ bool Colors::game(string guess)
 {
 
     secret_str_ = "";
-
+    string str_rights = "";
     for(auto sec_index : secret_)
     {
         secret_str_.push_back(sec_index);
@@ -80,6 +80,14 @@ bool Colors::game(string guess)
             continue;
         }
     }
+
+
+    str_rights = to_string(right_guess_);
+    str_rights += to_string(almost_right_);
+
+    guess += str_rights;
+    every_guess_.push_back(guess);
+
     if(right_guess_ == 4)
     {
         return true;
@@ -88,6 +96,7 @@ bool Colors::game(string guess)
     {
         return false;
     }
+
 
 
 }
@@ -180,7 +189,30 @@ bool Colors::input_check(string guess_two, bool format)
 
 void Colors::print() const
 {
-    cout << right_guess_ << " | " << almost_right_ << " |" << endl;
+
+
+    for(auto evry_guess_idx : every_guess_)
+    {
+        int counter = 1;
+        cout << "| ";
+        for(auto sing_gues_idx : evry_guess_idx)
+        {
+            if(counter >= 5)
+            {
+                cout << " | " << sing_gues_idx;
+            }
+            else
+            {
+                cout << sing_gues_idx << " ";
+                counter++;
+            }
+
+
+        }
+        cout << " | " << endl;
+    
+    }
+
 }
 
 
