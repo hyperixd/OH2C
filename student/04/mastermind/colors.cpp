@@ -191,7 +191,7 @@ void Colors::print() const
 {
 
 
-    for(auto evry_guess_idx : every_guess_)
+    for(basic_string<char> evry_guess_idx : every_guess_)
     {
         int counter = 1;
         cout << "| ";

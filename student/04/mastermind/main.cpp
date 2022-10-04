@@ -121,7 +121,7 @@ void print_line_with_char(char c, unsigned int line_length)
 
 // Prints all color series.
 // (Not called in the template code.)
-void print_all( Colors& secret_colors, bool win)
+void print_all( Colors& secret_colors)
 {
     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
 
@@ -163,7 +163,7 @@ bool play_game(Colors& secret_colors)
         
          //play_game(secret_colors);
         
-        print_all(secret_colors, win);
+        print_all(secret_colors);
         return win;
 
     
