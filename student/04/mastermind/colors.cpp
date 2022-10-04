@@ -67,17 +67,13 @@ bool Colors::game(string guess)
     temp_sec = secret_str_;
     temp_guess = guess_temp;
 
-    for(int x = 0; x < 4-already_removed; ++x)
+    for(auto test_str : temp_guess)
     {
-        if(secret_str_.find(guess_temp.at(x)) != string::npos)
+        if(temp_sec.find(test_str) != string::npos)
         {
-            int k = temp_sec.find(temp_guess.at(x- remove_2 ));
+            int k = temp_sec.find(test_str);
             temp_sec.erase(k,1);
-            temp_guess.erase(x-remove_2,1);
-            //already_removed++;
-            remove_2++;
             almost_right_++;
-            continue;
         }
     }
 
