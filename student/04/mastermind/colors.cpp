@@ -41,7 +41,7 @@ bool Colors::game(string guess)
     right_guess_ = 0;
     almost_right_ = 0;
     int already_removed = 0;
-    int remove_2 = 0;
+
     string guess_temp = guess;
     vector<char> secret_temp = secret_;
     //vector<char>::iterator p = secret_temp.begin();
