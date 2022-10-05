@@ -1,5 +1,6 @@
 #include "colors.hh"
 
+//Secret_colors is the eligible colors that can be picked:
 Colors::Colors(const vector<char>& secret_colors):
   secret_colors_(secret_colors)
 
@@ -11,72 +12,59 @@ Colors::Colors(const vector<char>& secret_colors):
     {
         secret_colors_string_ += secret_colors_index;
     }
-
-
 }
 
-
-
+//Playing one round of the mastermind:
 bool Colors::game(string guess)
 {
-
+    // Formatting variables
     secret_str_ = "";
     string str_rights = "";
+    
+    //Making a string from the secret color vector for easier processing:
     for(auto sec_index : secret_)
     {
         secret_str_.push_back(sec_index);
     }
 
-
     //Converting the string to upper case.
-    for(basic_string<char>::size_type x = 0; x < guess.length(); x++)
-    {
-        guess.at(x) = toupper(guess.at(x));
-    }
+    guess = is_upper(guess);
 
 
-    //Formatting right guesses:
-    string temp_guess = "";
-    string temp_sec = "";
+    //Formatting right guesses and variables:
     right_guess_ = 0;
     almost_right_ = 0;
     int already_removed = 0;
-
+    //Making variable for guess so we can remove parts from it.
     string guess_temp = guess;
-    vector<char> secret_temp = secret_;
-    //vector<char>::iterator p = secret_temp.begin();
 
+    //Goes through the guessed colors and checks if it's exactly right:
     for(int i = 0; i < 4; ++i)
     {
         if(guess.at(i) == secret_.at(i))
         {
             secret_str_.erase(i-already_removed,1);
             guess_temp.erase(i-already_removed,1);
-            //p = secret_temp.begin()+ i - already_removed;
             already_removed++;
             right_guess_++;
-
-            //secret_temp.erase(p);
-
-
-
 
         }
     }
 
-    temp_sec = secret_str_;
-    temp_guess = guess_temp;
-
-    for(auto test_str : temp_guess)
+    //After removing exactly right guesses, find if some of the colors
+    // are at all in secret colors:
+    for(auto test_str : guess_temp)
     {
-        if(temp_sec.find(test_str) != string::npos)
+        if(secret_str_.find(test_str) != string::npos)
         {
-            int k = temp_sec.find(test_str);
-            temp_sec.erase(k,1);
+            int k = secret_str_.find(test_str);
+            secret_str_.erase(k,1);
             almost_right_++;
         }
     }
 
+    //Add the right and almost right guesses in the end of the guess string
+    // and save that to vector for printing:
 
     str_rights = to_string(right_guess_);
     str_rights += to_string(almost_right_);
@@ -84,6 +72,7 @@ bool Colors::game(string guess)
     guess += str_rights;
     every_guess_.push_back(guess);
 
+    // If function returns 4 right guesses, player has won.
     if(right_guess_ == 4)
     {
         return true;
@@ -93,10 +82,8 @@ bool Colors::game(string guess)
         return false;
     }
 
-
-
 }
-
+//Generates ranom secret color sequence and adds it to secret vector:
 void Colors::random(int seed)
 {
     // Generating random numbers between
@@ -112,24 +99,18 @@ void Colors::random(int seed)
 
 }
 
+//If player wants to give the sescret colors themselves, this function
+// adds the string to the secret vector:
 bool Colors::is_listed(string list)
 {
 
     //Formatting secret list if user have inputted invalid answers before
     secret_ = {};
 
-
-
     //Converting the string to upper case.
-    for(basic_string<char>::size_type x = 0; x < list.length(); x++)
-    {
-        list.at(x) = toupper(list.at(x));
-    }
+    list = is_upper(list);
 
-
-
-
-    //Check if the colors are in secret list:       .......secret_.push_back(list_index);
+    //Check if the given colors are in eligible secret list:
     if(input_check(list, true))
     {
         return true;
@@ -140,32 +121,33 @@ bool Colors::is_listed(string list)
     }
 }
 
-bool Colors::input_check(string guess_two, bool format)
+
+//Checks if input is right and if format == true -> add the guess to vector:
+bool Colors::input_check(string guess, bool format)
 {
     //Converting the string to upper case.
-    for(basic_string<char>::size_type x = 0; x < guess_two.length(); x++)
-    {
-        guess_two.at(x) = toupper(guess_two.at(x));
-    }
+    guess = is_upper(guess);
 
-    if(guess_two.size() != 4)
+    if(guess.size() != 4)
     {
         cout << "Wrong size" << endl;
         return false;
     }
 
+    //Check if the colors are in secret list:
 
-
-    //Check if the colors are in secret list:       .......secret_.push_back(list_index);
-
-    for(auto list_index : guess_two)
+    for(auto list_index : guess)
     {
-        if(secret_colors_string_.find(list_index) != string::npos && format == true)
+        //If player is giving the secret list themselves, add it to secret_:
+        if(secret_colors_string_.find(list_index)
+            != string::npos && format == true)
         {
             secret_.push_back(list_index);
             continue;
         }
-        else if(secret_colors_string_.find(list_index) != string::npos && format == false)
+        // Only checking if input is right:
+        else if(secret_colors_string_.find(list_index)
+                != string::npos && format == false)
         {
             continue;
         }
@@ -182,21 +164,26 @@ bool Colors::input_check(string guess_two, bool format)
     return true;
 
 }
-
+//Prints the guesses and how many are right or almost right.
 void Colors::print() const
 {
+    
+    const int PRINT_NUM = 5;
 
-
-    for(basic_string<char> evry_guess_idx : every_guess_)
+    for(basic_string<char> every_guess_index : every_guess_)
     {
+        //In start print the vertical bar and reset counter.
         int counter = 1;
         cout << "|";
-        for(auto sing_gues_idx : evry_guess_idx)
+        for(auto sing_gues_idx : every_guess_index)
         {
-            if(counter >= 5)
+            //If counter is PRINT_NUM, starts printing the guess part, 
+            //which is different from char part:
+            if(counter >= PRINT_NUM)
             {
                 cout << " | " << sing_gues_idx;
             }
+            //Normally print this:
             else
             {
                 cout << " " << sing_gues_idx;
@@ -205,10 +192,21 @@ void Colors::print() const
 
 
         }
+        //In the end of the column print vertical bar:
         cout << " | " << endl;
     
     }
 
+}
+
+//Converts text to uppercase:
+string Colors::is_upper(string text)
+{
+    for(basic_string<char>::size_type x = 0; x < text.length(); x++)
+    {
+        text.at(x) = toupper(text.at(x));
+    }
+    return text;
 }
 
 

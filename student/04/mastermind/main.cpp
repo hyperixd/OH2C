@@ -1,6 +1,3 @@
-// TODO: Include your header file of the class describing a series of four colors
-
-
 /* Mastermind
  *
  * Desc:
@@ -33,6 +30,14 @@
  *
  * Notes about the program and it's implementation:
  *
+ *  The main game works by saving secret color sequence to vector, where first
+ * it checks if the players guesses are exactly right and removing right
+ * guesses from temporary guess string and secret color string.
+ *  After that the game checks if any of the guesses colors are anywhere in the
+ * secret sequence and saves those up.
+ *  Then the program saves the original guess and right and almost right
+ * guesses to a vector, where it prints those.
+ *
  * */
 
 
@@ -44,10 +49,11 @@
 using namespace std;
 
 // Maximum number of guesses
-// (Not used in the template code)
-const unsigned int GUESS_MAX = 10; // Not in use, yet
+
+const unsigned int GUESS_MAX = 10; 
 
 // Number of colors in a series
+
 const unsigned int SIZE = 4;
 
 // Length of the suffix part when printing a row.
@@ -60,7 +66,6 @@ const unsigned int SUFFIX_LENGTH_IN_PRINT = 5;
 const string INFO_TEXT = "Colors in use: \
 B = Blue, R = Red, Y = Yellow, G = Green, O = Orange, V = Violet";
 
-// TODO: Do you need more constants?
 
 // Reads the input way, either random or listing way,
 // and fills the color series in the user-desired way.
@@ -90,20 +95,17 @@ void get_input(Colors& secret_color)
             cout << "Enter four colors (four letters without spaces): ";
             string colors = "";
             cin >> colors;
+            //Checks if given list is eligible:
             if(secret_color.is_listed(colors))
             {
                 accepted = true;
             }
-
-            
         }
     }
     else
     {
+        // If user input something other that L or R repeat get_input():
         cout << "Bad input" << endl;
-        // Below the function itself is called recursively, which makes the
-        // above code executed until an acceptable input_str is given,
-        // but instead you can enclose the above code inside a loop structure.
         get_input(secret_color);
     }
 }
@@ -119,40 +121,32 @@ void print_line_with_char(char c, unsigned int line_length)
     cout << endl;
 }
 
-// Prints all color series.
-// (Not called in the template code.)
+// Prints game status:
+
 void print_all( Colors& secret_colors)
 {
     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
-
+    //Most of the printing is happening in class:
     secret_colors.print();
-
-
-    //cout << "| ";
-
-
-    print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
-
-
+     print_line_with_char('=', 2 * (SIZE + SUFFIX_LENGTH_IN_PRINT) + 1);
 }
 
 
-// Implements the actual game loop, where user-given guesses are read
-// and compared to the secret row.
-// On each round, all rows given so far are printed.
-
-
+//Asking player for colors or if they want to stop playing:
 bool play_game(Colors& secret_colors)
 {
+    //Formatting variables:
     bool win = false;
-
     string guess;
     bool not_invalid = false;
+
+    // prints row until player gives eligible guess:
+    
     while(not_invalid == false)
     {
         cout << "ROW> ";
-
         cin >> guess;
+        
         if(guess == "q" or guess == "Q")
         {
             exit(EXIT_SUCCESS);
@@ -162,13 +156,11 @@ bool play_game(Colors& secret_colors)
             not_invalid = true;
         }
     }
-    
-        win = secret_colors.game(guess);
-        
-         //play_game(secret_colors);
-        
-        print_all(secret_colors);
-        return win;
+    //Goes to the class file where the game function is:
+    win = secret_colors.game(guess);
+    //Prints game status
+    print_all(secret_colors);
+    return win;
 
     
 }
@@ -176,35 +168,32 @@ bool play_game(Colors& secret_colors)
 
 int main()
 {
+    //formatting variables:
     unsigned int playtimes = 0;
     bool win = false;
-    vector<char>sec_clr = {'B', 'R', 'Y', 'G', 'O', 'V'};
-    vector<char> seccc = {};
+    vector<char>secret_col = {'B', 'R', 'Y', 'G', 'O', 'V'};
     cout << INFO_TEXT << endl;
     print_line_with_char('*', INFO_TEXT.size());
-    Colors secret_colors(sec_clr);
-    // TODO: Declare an object for a color series (the secret one)
+    //Creating the secret color class:
+    Colors secret_colors(secret_col);
+    
     get_input(secret_colors);
+    //Repeating the game until 10 guesses or win:
     while(playtimes < GUESS_MAX && win == false)
     {
         win = play_game(secret_colors);
         playtimes++;
     }
-    if(win == false)
+    if(win)
     {
-        cout << "You lost: Maximum number of guesses done" << endl;
+        cout << "You won: Congratulations!" << endl;
+        
     }
     else
     {
-        cout << "You won: Congratulations!" << endl;
+        cout << "You lost: Maximum number of guesses done" << endl;
     }
 
-
-    // TODO: Play the game, i.e. repeatedly read a user given number series
-    
-    
-    // and compare it with the secret one
-
-    return 0;
+    return EXIT_SUCCESS;
 }
 

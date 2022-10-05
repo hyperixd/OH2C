@@ -17,16 +17,16 @@ public:
     bool game(string guess);
     void random(int seed);
     bool is_listed(string list);
-    bool input_check(string guess_two, bool format = true);
+    bool input_check(string guess, bool format = true);
     void print() const;
 
 
 
 private:
 
-
-
     // Private methdos
+    string is_upper(string text);
+    
     vector<char> guess_;
     vector<char> secret_;
     string secret_str_;
