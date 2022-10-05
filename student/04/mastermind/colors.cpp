@@ -99,7 +99,7 @@ void Colors::random(int seed)
 
 }
 
-//If player wants to give the sescret colors themselves, this function
+//If player wants to give the secret colors themselves, this function
 // adds the string to the secret vector:
 bool Colors::is_listed(string list)
 {
