@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <random>
 
+using namespace std;
+
 int main()
 {
     // This is a random number generator that should be given as parameter to the
@@ -11,7 +13,7 @@ int main()
 
     std::cout << "Enter some text. Quit by entering the word \"END\"." << std::endl;
     std::string word;
-
+    string::iterator sec_letter = word.begin() + 1;
     while (std::cin >> word)
     {
         if (word == "END")
@@ -20,6 +22,9 @@ int main()
         }
 
         // TODO: implement your solution here
+        
+        string::iterator sec_last_letter = word.end() - 1;
+        shuffle(sec_letter, sec_last_letter, generator);
 	
         std::cout << word << std::endl;
     }
