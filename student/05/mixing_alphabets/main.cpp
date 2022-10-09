@@ -24,8 +24,18 @@ int main()
         // TODO: implement your solution here
         
         string::iterator sec_last_letter = word.end() - 1;
+        if(word.size() <= 2)
+        {
+            std::cout << word << std::endl;
+        }
+        else
+        {
+
+        
         shuffle(sec_letter, sec_last_letter, generator);
 	
         std::cout << word << std::endl;
+
+        }
     }
 }
