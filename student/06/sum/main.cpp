@@ -5,6 +5,8 @@
 #define RECURSIVE_FUNC
 #endif
 
+using namespace std;
+
 std::vector<std::string> split(const std::string& s, const char delimiter, bool ignore_empty = false){
     std::vector<std::string> result;
     std::string tmp = s;
@@ -29,9 +31,22 @@ int sum_recursive(std::vector<int>& v){
     RECURSIVE_FUNC
     // Do not remove RECURSIVE_FUNC declaration, it's necessary for automatic testing to work
     // ------------
-
+    
 
     // Add your implementation here
+    vector<int>::iterator v_first = v.begin();
+    vector<int>::iterator v_last = v.end() - 1;
+    if(v.size() == 1)
+    {
+        return *v_first;
+
+    }
+    else
+    {
+        *v_first += *v_last;
+        v.pop_back();
+        return sum_recursive(v);
+    }
 }
 
 // Do not modify rest of the code, or the automated testing won't work.
