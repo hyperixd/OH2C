@@ -2,6 +2,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
+#include <algorithm>
+#include <set>
+
+using namespace std;
 
 const std::string HELP_TEXT = "S = store id1 i2\nP = print id\n"
                               "C = count id\nD = depth id\n";
@@ -30,10 +35,23 @@ std::vector<std::string> split(const std::string& s,
     return result;
 }
 
+struct Hlo
+{
+    /* data */
+    string nimi;
+    int num;
+};
+
+bool save(map<string, set<string>>& lista, string id1, string id2)
+{
+
+}
+
+
 int main()
 {
     // TODO: Implement the datastructure here
-
+    map<string, set<string>> lista;
 
     while(true)
     {
@@ -61,6 +79,11 @@ int main()
             std::string id2 = parts.at(2);
 
             // TODO: Implement the command here!
+            if(! save(lista, id1, id2))
+            {
+                
+            }
+            //.........................................
 
         }
         else if(command == "P" or command == "p")
