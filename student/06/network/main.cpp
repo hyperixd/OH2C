@@ -4,7 +4,6 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <set>
 
 using namespace std;
 
@@ -35,23 +34,66 @@ std::vector<std::string> split(const std::string& s,
     return result;
 }
 
-struct Hlo
+void print(map<string, vector<string>> lista, string id, string dots)
 {
-    /* data */
-    string nimi;
-    int num;
-};
-
-bool save(map<string, set<string>>& lista, string id1, string id2)
-{
-
+    for(string nimi : lista.at(id))
+    {
+        cout << dots << nimi << endl;
+        if(!lista.at(nimi).empty())
+        {
+            dots += "..";
+            print(lista, nimi, dots);
+            dots = dots.substr(0, dots.length() - 2);
+        }
+        else if(lista.at(id).size() <= 1)
+        {
+            dots = "..";
+        }
+    }
 }
 
+void count(map<string, vector<string>> lista, string id, int& sum)
+{
+    for(string nimi : lista.at(id))
+    {
+        sum++;
+        if(!lista.at(nimi).empty())
+        {
+            count(lista, nimi, sum);
+        }
+    }
+}
+
+void lista_depth(map<string, vector<string>> lista, string id, int& depth, int count = 0)
+{
+    for(string nimi : lista.at(id))
+    {
+        count++;
+        if(!lista.at(nimi).empty())
+        {
+            lista_depth(lista, nimi, depth, count);
+            count--;
+
+        }
+        else
+        {
+            if(count > depth)
+            {
+                depth = count;
+                count = 0;
+            }
+            else
+            {
+                count = 0;
+            }
+        }
+    }
+}
 
 int main()
 {
     // TODO: Implement the datastructure here
-    map<string, set<string>> lista;
+    map<string, vector<string>> lista;
 
     while(true)
     {
@@ -79,11 +121,18 @@ int main()
             std::string id2 = parts.at(2);
 
             // TODO: Implement the command here!
-            if(! save(lista, id1, id2))
+            if(lista.find(id1) != lista.end())
             {
-                
+                lista.at(id1).push_back(id2);
+                lista.insert({id2, {}});
+
             }
-            //.........................................
+            else
+            {
+                vector<string> vec = {id2};
+                lista.insert({id1, vec});
+                lista.insert({id2, {}});
+            }
 
         }
         else if(command == "P" or command == "p")
@@ -96,6 +145,8 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            cout << id << endl;
+            print(lista, id, "..");
 
         }
         else if(command == "C" or command == "c")
@@ -108,6 +159,9 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            int sum = 0;
+            count(lista, id, sum);
+            cout << sum << endl;
 
         }
         else if(command == "D" or command == "d")
@@ -120,6 +174,9 @@ int main()
             std::string id = parts.at(1);
 
             // TODO: Implement the command here!
+            int depth = 0;
+            lista_depth(lista, id, depth);
+            cout << 1 + depth << endl;
 
         }
         else if(command == "Q" or command == "q")
