@@ -155,7 +155,7 @@ bool is_valid(multimap<string, vector<string>> gigs)
     }
     multimap<string,vector<string>>::iterator stage_iter = gigs.begin();
     multimap<string, multimap<string,vector<string>>::iterator> versus;
-    versus.insert({stage_iter->second.at(STAGE), gigs_iter});
+    versus.insert({stage_iter->second.at(STAGE), stage_iter});
     stage_iter++;
     while(stage_iter != gigs.end())
     {
@@ -174,7 +174,8 @@ bool is_valid(multimap<string, vector<string>> gigs)
             
             if(find(day.begin(), day.end(), versus_itr->second->second.at(DATE)) == day.end())
             {
-                day.push_back(versus_itr->second->second.at(DATE));
+                day.push_back(versus_test->second->second.at(DATE));
+                
             }
             else
             {
