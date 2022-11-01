@@ -51,7 +51,7 @@ const std::string FARTHEST_POSSIBLE_YEAR = "2030";
 
 const int DATE = 0;
 const int CITY = 1;
-const int PLACE = 2;
+const int STAGE = 2;
 
 
 // Casual split func, if delim char is between "'s, ignores it.
@@ -209,15 +209,68 @@ void print_artist(multimap<string,vector<string>> gigs, string artist)
 
         }
         map<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
-        for (int i = 0; i < num; i++)
+        while(versus_itr != versus.end())
         {
-            cout << " - " << versus_itr->first << " : " << versus_itr->second->second.at(CITY) << ", " << versus_itr->second->second.at(PLACE) << endl;
+            cout << " - " << versus_itr->first << " : " << versus_itr->second->second.at(CITY) << ", " << versus_itr->second->second.at(STAGE) << endl;
             versus_itr++;
         }
 
     }
     
 
+}
+
+void print_all_stages(multimap<string,vector<string>> gigs)
+{
+    multimap<string,vector<string>>::iterator stage_test = gigs.begin();
+
+    map<string, multimap<string,vector<string>>::iterator> versus;
+    
+    versus.insert({stage_test->second.at(CITY), stage_test});
+    stage_test++;
+    while(stage_test != gigs.end())
+    {
+        if(versus.find(stage_test->second.at(STAGE)) == versus.end() )
+        {
+            versus.insert({stage_test->second.at(CITY), stage_test});
+            stage_test++;
+        }
+        else
+        {
+            stage_test++;
+        }
+
+    }
+    cout << "All gig places in alphabetical order:" << endl;
+    
+    map<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
+    while(versus_itr != versus.end())
+    {
+        cout << versus_itr->first << ", " << versus_itr->second->second.at(STAGE) << endl;
+        versus_itr++;
+    }
+}
+
+void print_stage(multimap<string,vector<string>> gigs, string input)
+{
+    multimap<string,vector<string>>::iterator stage_test = gigs.begin();
+
+    map<string, multimap<string,vector<string>>::iterator> versus;
+    
+    versus.insert({stage_test->second.at(STAGE), stage_test});
+    stage_test++;
+    while(stage_test != gigs.end())
+    {
+        if(versus.find(stage_test->second.at(STAGE)) == versus.end() )
+        {
+            versus.insert({stage_test->second.at(CITY), stage_test});
+            stage_test++;
+        }
+        else
+        {
+            stage_test++;
+        }
+    }
 }
 
 int main()
@@ -227,7 +280,7 @@ int main()
     {
         return EXIT_FAILURE;
     }
-    
+
     while(true)
     {
         string input = " ";
@@ -248,6 +301,18 @@ int main()
             print_artist(gigs, text.at(1));
 
         }
+        else if(input == "STAGES")
+        {
+            print_all_stages(gigs);
+        }
+
+        else if(input.find("STAGE") == 0)
+        {
+            vector<string> text = split(input, ' ');
+            //cout << input << endl;
+            print_stage(gigs, text.at(1));
+        }
+
         
 
 
