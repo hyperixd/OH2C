@@ -49,6 +49,11 @@ using namespace std;
 // Farthest year for which gigs can be allocated
 const std::string FARTHEST_POSSIBLE_YEAR = "2030";
 
+const int DATE = 0;
+const int CITY = 1;
+const int PLACE = 2;
+
+
 // Casual split func, if delim char is between "'s, ignores it.
 std::vector<std::string> split(const std::string& str, char delim = ';')
 {
@@ -150,33 +155,68 @@ bool read_file(multimap<string, vector<string>>& gigs )
     
 }
 
-void print(multimap<string,vector<string>> gigs, string artist = "")
+void print_all_artists(multimap<string,vector<string>> gigs)
 {
     multimap<string,vector<string>>::iterator artist_begin = gigs.begin();
     multimap<string,vector<string>>::iterator artist_test = gigs.begin();
-    if(artist == "")
+
+ 
+    cout << "All artists in alphabetical order:" << endl;
+    cout << artist_begin->first << endl;
+    while ( artist_begin != gigs.end() ) 
     {
-        cout << "All artists in alphabetical order:" << endl;
-        cout << artist_begin->first << endl;
-        while ( artist_begin != gigs.end() ) 
+        if(artist_begin->first == artist_test->first)
         {
-            if(artist_begin->first == artist_test->first)
-            {
-                ++artist_begin;
-            }
-            else
-            {
-                cout << artist_begin->first;
-                //for(int i = 0; i <= 2; i++)
-                //{
-                //    cout << " " << gigs_begin->second.at(i);
-                //}
-                cout << endl;
-                ++artist_begin;
-                artist_test = artist_begin;
-            }
+            ++artist_begin;
+        }
+        else
+        {
+            cout << artist_begin->first;
+            //for(int i = 0; i <= 2; i++)
+            //{
+            //    cout << " " << gigs_begin->second.at(i);
+            //}
+            cout << endl;
+            ++artist_begin;
+            artist_test = artist_begin;
         }
     }
+ 
+
+}
+
+void print_artist(multimap<string,vector<string>> gigs, string artist)
+{
+    int num = gigs.count(artist);
+    if(num == 0)
+    {
+        cout << "Error: Not found." << endl;
+    }
+    else if(gigs.find(artist)->second.size() == 0)
+    {
+
+    }
+    else
+    {
+        multimap<string,vector<string>>::iterator artist_begin = gigs.find(artist);
+        cout << "Artist "<< artist <<" has the following gigs in the order they are listed:" << endl;
+        map<string, multimap<string,vector<string>>::iterator> versus;
+        for(int i = 0; i < num; i++)
+        {
+            versus.insert({artist_begin->second.at(DATE), artist_begin});
+
+            artist_begin++;
+
+        }
+        map<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
+        for (int i = 0; i < num; i++)
+        {
+            cout << " - " << versus_itr->first << " : " << versus_itr->second->second.at(CITY) << ", " << versus_itr->second->second.at(PLACE) << endl;
+            versus_itr++;
+        }
+
+    }
+    
 
 }
 
@@ -187,18 +227,6 @@ int main()
     {
         return EXIT_FAILURE;
     }
-    //multimap<string,vector<string>>::iterator gigs_begin;
-    //gigs_begin = gigs.begin();
-    //while ( gigs_begin != gigs.end() ) 
-    //{
-    //    cout << gigs_begin->first;
-    //    for(int i = 0; i <= 2; i++)
-    //    {
-    //        cout << " " << gigs_begin->second.at(i);
-    //    }
-    //    cout << endl;
-    //    ++gigs_begin;
-    //}
     
     while(true)
     {
@@ -211,12 +239,16 @@ int main()
         }
         else if(input == "ARTISTS")
         {
-            print(gigs);
+            print_all_artists(gigs);
         }
         else if(input.find("ARTIST") == 0)
         {
-            
+            vector<string> text = split(input, ' ');
+            //cout << input << endl;
+            print_artist(gigs, text.at(1));
+
         }
+        
 
 
     }
