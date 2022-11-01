@@ -19,10 +19,32 @@
  * artist_name;date;town_name;stage_name.
  * Otherwise the program execution terminates instantly (but still gracefully).
  *
+ * Program author
+ * Name: August Laulainen
+ * Student number: 50077795
+ * UserID: nbaula
+ * E-Mail: august.laulainen@tuni.fi
+ * 
+ * Notes about the program and it's implementation:
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
  * */
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <map>
+#include <cctype>
+#include <algorithm>
+
+using namespace std;
 
 // Farthest year for which gigs can be allocated
 const std::string FARTHEST_POSSIBLE_YEAR = "2030";
@@ -94,7 +116,115 @@ bool is_valid_date(const std::string& date_str)
     }
 }
 
+bool read_file(multimap<string, vector<string>>& gigs )
+{
+    string tiedoston_nimi = "";
+    vector<string> splitted;
+    string artist = "";
+    cout << "Give a name for input file: ";
+    getline(cin, tiedoston_nimi);
+    ifstream tiedosto_olio(tiedoston_nimi);
+    if ( not tiedosto_olio )
+    {
+        cout << "Error: File could not be read." << endl;
+        return EXIT_FAILURE;
+    } 
+    else
+    {
+        string rivi;
+        while ( getline(tiedosto_olio, rivi) )
+        {
+            splitted = split(rivi);
+            if(!is_valid_date(splitted.at(1)) || splitted.size() != 4)
+            {
+                cout << "Error: Invalid format in file." << endl;
+                return EXIT_FAILURE;
+            }
+            artist = splitted.at(0);
+            splitted.erase(splitted.begin());
+            gigs.insert({artist, splitted});
+        }
+        tiedosto_olio.close();
+    }
+    return EXIT_SUCCESS;
+    
+}
+
+void print(multimap<string,vector<string>> gigs, string artist = "")
+{
+    multimap<string,vector<string>>::iterator artist_begin = gigs.begin();
+    multimap<string,vector<string>>::iterator artist_test = gigs.begin();
+    if(artist == "")
+    {
+        cout << "All artists in alphabetical order:" << endl;
+        cout << artist_begin->first << endl;
+        while ( artist_begin != gigs.end() ) 
+        {
+            if(artist_begin->first == artist_test->first)
+            {
+                ++artist_begin;
+            }
+            else
+            {
+                cout << artist_begin->first;
+                //for(int i = 0; i <= 2; i++)
+                //{
+                //    cout << " " << gigs_begin->second.at(i);
+                //}
+                cout << endl;
+                ++artist_begin;
+                artist_test = artist_begin;
+            }
+        }
+    }
+
+}
+
 int main()
 {
-    return EXIT_SUCCESS;
+    multimap<string,vector<string>> gigs = {};
+    if(read_file(gigs))
+    {
+        return EXIT_FAILURE;
+    }
+    //multimap<string,vector<string>>::iterator gigs_begin;
+    //gigs_begin = gigs.begin();
+    //while ( gigs_begin != gigs.end() ) 
+    //{
+    //    cout << gigs_begin->first;
+    //    for(int i = 0; i <= 2; i++)
+    //    {
+    //        cout << " " << gigs_begin->second.at(i);
+    //    }
+    //    cout << endl;
+    //    ++gigs_begin;
+    //}
+    
+    while(true)
+    {
+        string input = " ";
+        cout << "gigs> ";
+        getline(cin,input);
+        if(input == "QUIT")
+        {
+            return EXIT_SUCCESS;
+        }
+        else if(input == "ARTISTS")
+        {
+            print(gigs);
+        }
+        else if(input.find("ARTIST") == 0)
+        {
+            
+        }
+
+
+    }
+
+
+    
 }
+
+
+    
+
