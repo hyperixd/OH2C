@@ -141,7 +141,7 @@ bool is_valid(multimap<string, vector<string>> gigs)
             else
             {
                 cout << "Error: Already exists." << endl;
-                return 1;
+                return EXIT_FAILURE;
             }
 
         }
@@ -179,7 +179,7 @@ bool is_valid(multimap<string, vector<string>> gigs)
             else
             {
                 cout << "Error: Already exists." << endl;
-                return 1;
+                return EXIT_FAILURE;
             }
 
         }
@@ -197,7 +197,7 @@ bool is_valid(multimap<string, vector<string>> gigs)
 
 
 
-    return 0;
+    return EXIT_SUCCESS;
 
 }
 
@@ -220,6 +220,14 @@ bool read_file(multimap<string, vector<string>>& gigs )
         while ( getline(tiedosto_olio, rivi) )
         {
             splitted = split(rivi);
+            for(auto str : splitted)
+            {
+                if(str.size() == 0)
+                {
+                    cout << "Error: Invalid format in file." << endl;
+                    return EXIT_FAILURE;
+                }
+            }
             if(splitted.size() != 4)
             {
                 cout << "Error: Invalid format in file." << endl;
@@ -314,26 +322,42 @@ void print_all_stages(multimap<string,vector<string>> gigs)
 {
     multimap<string,vector<string>>::iterator stage_test = gigs.begin();
 
-    map<string, multimap<string,vector<string>>::iterator> versus;
+    multimap<string, multimap<string,vector<string>>::iterator> versus;
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
     
     versus.insert({stage_test->second.at(CITY), stage_test});
     stage_test++;
     while(stage_test != gigs.end())
     {
-        if(versus.find(stage_test->second.at(STAGE)) == versus.end() )
+        if(versus.find(stage_test->second.at(CITY)) == versus.end() )
         {
             versus.insert({stage_test->second.at(CITY), stage_test});
             stage_test++;
         }
         else
         {
-            stage_test++;
+            int num = versus.count(stage_test->second.at(CITY));
+            for(int i = 0; i < num; i++)
+            {
+                versus_itr = versus.find(stage_test->second.at(CITY));
+                if(versus_itr->second->second.at(STAGE) != stage_test->second.at(STAGE))
+                {
+                    versus.insert({stage_test->second.at(CITY), stage_test});
+                    stage_test++;
+                }
+                else
+                {
+                    stage_test++;
+                }
+                
+            }
+            
         }
 
     }
     cout << "All gig places in alphabetical order:" << endl;
     
-    map<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
+    versus_itr = versus.begin();
     while(versus_itr != versus.end())
     {
         cout << versus_itr->first << ", " << versus_itr->second->second.at(STAGE) << endl;
@@ -392,15 +416,16 @@ int main()
         string input = " ";
         cout << "gigs> ";
         getline(cin,input);
-        if(input == "QUIT")
+
+        if(input == "QUIT" || input == "quit")
         {
             return EXIT_SUCCESS;
         }
-        else if(input == "ARTISTS")
+        else if(input == "ARTISTS" || input == "artists")
         {
             print_all_artists(gigs);
         }
-        else if(input.find("ARTIST") == 0)
+        else if(input.find("ARTIST") == 0 || input.find("artist") == 0)
         {
             vector<string> text = split(input, ' ');
             if(text.size() < 2)
@@ -412,12 +437,12 @@ int main()
                 print_artist(gigs, text.at(1));
             }
         }
-        else if(input == "STAGES")
+        else if(input == "STAGES" || input == "stages")
         {
             print_all_stages(gigs);
         }
 
-        else if(input.find("STAGE") == 0)
+        else if(input.find("STAGE") == 0 || input.find("stage") == 0)
         {
             vector<string> text = split(input, ' ');
             if(text.size() < 2)
