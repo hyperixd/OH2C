@@ -154,7 +154,6 @@ bool is_valid(multimap<string, vector<string>> gigs)
             gigs_iter++;
     }
     multimap<string,vector<string>>::iterator stage_iter = gigs.begin();
-    multimap<string,vector<string>>::iterator test_stage = gigs.begin();
     multimap<string, multimap<string,vector<string>>::iterator> versus;
     versus.insert({stage_iter->second.at(STAGE), gigs_iter});
     stage_iter++;
