@@ -43,6 +43,7 @@
 #include <map>
 #include <cctype>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
@@ -121,6 +122,86 @@ bool is_valid_date(const std::string& date_str)
     }
 }
 
+bool is_valid(multimap<string, vector<string>> gigs)
+{
+    vector<string> day;
+    multimap<string,vector<string>>::iterator gigs_iter = gigs.begin();
+    multimap<string,vector<string>>::iterator test_iter = gigs.begin();
+    day.push_back(gigs_iter->second.at(DATE));
+    gigs_iter++;
+    while(gigs_iter != gigs.end())
+    {
+        if(gigs_iter->first == test_iter->first)
+        {
+            
+            if(find(day.begin(), day.end(), gigs_iter->second.at(DATE)) == day.end())
+            {
+                day.push_back(gigs_iter->second.at(DATE));
+            }
+            else
+            {
+                cout << "Error: Already exists." << endl;
+                return 1;
+            }
+
+        }
+        else
+        {
+            day.clear();
+            
+        }
+            test_iter = gigs_iter;
+            gigs_iter++;
+    }
+    multimap<string,vector<string>>::iterator stage_iter = gigs.begin();
+    multimap<string,vector<string>>::iterator test_stage = gigs.begin();
+    multimap<string, multimap<string,vector<string>>::iterator> versus;
+    versus.insert({stage_iter->second.at(STAGE), gigs_iter});
+    stage_iter++;
+    while(stage_iter != gigs.end())
+    {
+        versus.insert({stage_iter->second.at(STAGE), stage_iter});
+        stage_iter++;
+    }
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_test = versus.begin();
+    day.clear();
+    day.push_back(versus_itr->second->second.at(DATE));
+    versus_itr++;
+    while(versus_itr != versus.end())
+    {
+        if(versus_itr->first == versus_test->first)
+        {
+            
+            if(find(day.begin(), day.end(), versus_itr->second->second.at(DATE)) == day.end())
+            {
+                day.push_back(versus_itr->second->second.at(DATE));
+            }
+            else
+            {
+                cout << "Error: Already exists." << endl;
+                return 1;
+            }
+
+        }
+        else
+        {
+            day.clear();
+            
+        }
+            versus_test = versus_itr;
+            versus_itr++;
+
+
+
+    }
+
+
+
+    return 0;
+
+}
+
 bool read_file(multimap<string, vector<string>>& gigs )
 {
     string tiedoston_nimi = "";
@@ -140,9 +221,14 @@ bool read_file(multimap<string, vector<string>>& gigs )
         while ( getline(tiedosto_olio, rivi) )
         {
             splitted = split(rivi);
-            if(!is_valid_date(splitted.at(1)) || splitted.size() != 4)
+            if(splitted.size() != 4)
             {
                 cout << "Error: Invalid format in file." << endl;
+                return EXIT_FAILURE;
+            }
+            else if(!is_valid_date(splitted.at(1)))
+            {
+                cout << "Error: Invalid date." << endl;
                 return EXIT_FAILURE;
             }
             artist = splitted.at(0);
@@ -151,6 +237,11 @@ bool read_file(multimap<string, vector<string>>& gigs )
         }
         tiedosto_olio.close();
     }
+    if(is_valid(gigs))
+    {
+        return EXIT_FAILURE;
+    }
+
     return EXIT_SUCCESS;
     
 }
@@ -313,9 +404,14 @@ int main()
         else if(input.find("ARTIST") == 0)
         {
             vector<string> text = split(input, ' ');
-            //cout << input << endl;
-            print_artist(gigs, text.at(1));
-
+            if(text.size() < 2)
+            {
+                cout << "Error: Invalid input." << endl;
+            }
+            else
+            {
+                print_artist(gigs, text.at(1));
+            }
         }
         else if(input == "STAGES")
         {
@@ -325,8 +421,18 @@ int main()
         else if(input.find("STAGE") == 0)
         {
             vector<string> text = split(input, ' ');
-            //cout << input << endl;
-            print_stage(gigs, text.at(1));
+            if(text.size() < 2)
+            {
+                cout << "Error: Invalid input." << endl;
+            }
+            else
+            {
+                print_stage(gigs, text.at(1));
+            }
+        }
+        else
+        {
+            cout << "Error: Invalid input." << endl;
         }
 
         
