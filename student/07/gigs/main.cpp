@@ -255,21 +255,37 @@ void print_stage(multimap<string,vector<string>> gigs, string input)
 {
     multimap<string,vector<string>>::iterator stage_test = gigs.begin();
 
-    map<string, multimap<string,vector<string>>::iterator> versus;
+    multimap<string, multimap<string,vector<string>>::iterator> versus;
+
     
     versus.insert({stage_test->second.at(STAGE), stage_test});
+
     stage_test++;
     while(stage_test != gigs.end())
     {
-        if(versus.find(stage_test->second.at(STAGE)) == versus.end() )
+        
+        
+        
+        versus.insert({stage_test->second.at(STAGE), stage_test});
+        stage_test++;
+        
+
+    }
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.find(input);
+    if(versus_itr == versus.end())
+    {
+        cout << "Error: Not found." << endl;
+    }
+    else
+    {
+        int num = versus.count(input);
+        cout << "Stage "<< versus_itr->first <<" has gigs of the following artists:" << endl;
+        for(int i = 0;i < num; i++)
         {
-            versus.insert({stage_test->second.at(CITY), stage_test});
-            stage_test++;
+            cout << " - " <<versus_itr->second->first << endl;
+            versus_itr++;
         }
-        else
-        {
-            stage_test++;
-        }
+
     }
 }
 
