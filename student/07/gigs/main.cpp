@@ -27,12 +27,12 @@
  * 
  * Notes about the program and it's implementation:
  * 
- * 
- * 
- * 
- * 
- * 
- * 
+ *  The data is stored to multimap with Artists name as key and
+ * other values to vector.
+ *  Data is handled with iterators and the alphabetical /
+ * chronoligical order is created with creating multimap with wanted data as 
+ * key and data as iterator to original multimap.
+ * (Maybe not best implementation :D).
  * 
  * */
 
@@ -41,9 +41,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
-#include <cctype>
 #include <algorithm>
-#include <set>
 
 using namespace std;
 
@@ -195,12 +193,13 @@ bool is_invalid_stage(multimap<string, vector<string>> gigs)
         // If stages name is same:
         if(versus_iter->first == versus_test->first)
         {
-            //If the date is not in the day vector, add it there:
+            //If the next dates are same, return failure:
             if(versus_iter->second->second.at(DATE) == versus_test->second->second.at(DATE))
             {
                 cout << "Error: Already exists." << endl;
                 return EXIT_FAILURE;
             }
+            //If the date is not in the day vector, add it there:
             else if(find(day.begin(), day.end(), 
             versus_iter->second->second.at(DATE)) == day.end())
             {
@@ -506,7 +505,7 @@ void add_gig(multimap<string,vector<string>>& gigs, string artist
             cout << "Error: Invalid date." << endl;
         }
         // If there is no errors from stage:
-        else if(is_invalid_stage(gigs_test))
+        else if(!is_invalid_stage(gigs_test))
         {
             gigs = gigs_test;
             cout << "Gig added." << endl;
@@ -522,7 +521,7 @@ void add_gig(multimap<string,vector<string>>& gigs, string artist
         {
             cout << "Error: Invalid date." << endl;
         }
-        // If there is no errors from artist or stage:
+        // If there is no errors from artist and stage:
         else if(!is_invalid_artist(gigs_test) && !is_invalid_stage(gigs_test))
         {
             gigs = gigs_test;
@@ -544,6 +543,9 @@ void cancel(multimap<string,vector<string>>& gigs, string artist, string date)
     }
     else
     {
+        // num = amount of gigs, idx = used to check if
+        // there is only one gig left and idx_2 = how many gigs
+        // have been canceled.
         int num = gigs.count(artist);
         int idx = num;
         int idx_2 = 0;
@@ -575,6 +577,8 @@ void cancel(multimap<string,vector<string>>& gigs, string artist, string date)
                 idx_2++;
             }
         }
+        // if idx_2 is same as number of gigs, it means nothing
+        // have been canceled:
         if(idx_2 == num)
         {
             cout << "Error: No gigs after the given date." << endl;
