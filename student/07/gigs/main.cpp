@@ -50,6 +50,7 @@ using namespace std;
 // Farthest year for which gigs can be allocated
 const std::string FARTHEST_POSSIBLE_YEAR = "2030";
 
+//Constants for handling vectors:
 const int DATE = 0;
 const int CITY = 1;
 const int STAGE = 2;
@@ -122,22 +123,32 @@ bool is_valid_date(const std::string& date_str)
     }
 }
 
-bool is_valid(multimap<string, vector<string>> gigs)
+// Checks if artist has many gigs in same day or if stage is 
+// booked for many artits at the same time:
+bool is_invalid_artist(multimap<string, vector<string>> gigs)
 {
+    //Formatting variables and iterators:
     vector<string> day;
+    //Two iterators, which we are using to compare map keys.
     multimap<string,vector<string>>::iterator gigs_iter = gigs.begin();
     multimap<string,vector<string>>::iterator test_iter = gigs.begin();
+    //Adding first date to vector, where we can check if there are same dates.
     day.push_back(gigs_iter->second.at(DATE));
     gigs_iter++;
     while(gigs_iter != gigs.end())
     {
+        // Checks that the key is same:
         if(gigs_iter->first == test_iter->first)
         {
-            
-            if(find(day.begin(), day.end(), gigs_iter->second.at(DATE)) == day.end())
+            //If the date is not already in day vector. If not,
+            // add it to the day vector:
+            if(find(day.begin(), day.end(), gigs_iter->second.at(DATE))
+             == day.end())
             {
                 day.push_back(gigs_iter->second.at(DATE));
             }
+            // If date is in the vector, that means the artist has
+            // double booked and return failure.
             else
             {
                 cout << "Error: Already exists." << endl;
@@ -145,6 +156,7 @@ bool is_valid(multimap<string, vector<string>> gigs)
             }
 
         }
+        // If the keys are not same, we can clear day vector.
         else
         {
             day.clear();
@@ -153,30 +165,44 @@ bool is_valid(multimap<string, vector<string>> gigs)
             test_iter = gigs_iter;
             gigs_iter++;
     }
-    multimap<string,vector<string>>::iterator stage_iter = gigs.begin();
+    return EXIT_SUCCESS;
+}
+// Checks that stage is not double booked for one day:
+bool is_invalid_stage(multimap<string, vector<string>> gigs)
+{
+    // Formatting variables and iterators:
+    multimap<string,vector<string>>::iterator gigs_iter = gigs.begin();
     multimap<string, multimap<string,vector<string>>::iterator> versus;
-    versus.insert({stage_iter->second.at(STAGE), stage_iter});
-    stage_iter++;
-    while(stage_iter != gigs.end())
+    vector<string> day;
+    // Making new multimap so we can easily check the booked days by stages:
+    versus.insert({gigs_iter->second.at(STAGE), gigs_iter});
+    gigs_iter++;
+    // Adding the stages and iterator for the new multimap:
+    while(gigs_iter != gigs.end())
     {
-        versus.insert({stage_iter->second.at(STAGE), stage_iter});
-        stage_iter++;
+        versus.insert({gigs_iter->second.at(STAGE), gigs_iter});
+        gigs_iter++;
     }
-    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
-    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_test = versus.begin();
-    day.clear();
-    day.push_back(versus_itr->second->second.at(DATE));
-    versus_itr++;
-    while(versus_itr != versus.end())
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator
+    versus_iter = versus.begin();
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator
+    versus_test = versus.begin();
+    // Adding the date to day vector so we can check for the booking:
+    day.push_back(versus_iter->second->second.at(DATE));
+    versus_iter++;
+    while(versus_iter != versus.end())
     {
-        if(versus_itr->first == versus_test->first)
+        // If stages name is same:
+        if(versus_iter->first == versus_test->first)
         {
-            
-            if(find(day.begin(), day.end(), versus_itr->second->second.at(DATE)) == day.end())
+            //If the date is not in the day vector, add it there:
+            if(find(day.begin(), day.end(), 
+            versus_iter->second->second.at(DATE)) == day.end())
             {
                 day.push_back(versus_test->second->second.at(DATE));
                 
             }
+            // If it is, return failure.
             else
             {
                 cout << "Error: Already exists." << endl;
@@ -184,33 +210,33 @@ bool is_valid(multimap<string, vector<string>> gigs)
             }
 
         }
+        // If stage name is not the same, clear vector:
         else
         {
             day.clear();
             
         }
-            versus_test = versus_itr;
-            versus_itr++;
-
-
-
+        versus_test = versus_iter;
+        versus_iter++;
     }
-
-
 
     return EXIT_SUCCESS;
 
 }
 
+// Reads the text file including our data and gives it back to multimap
+// in main func.
+// Also handles errors here:
 bool read_file(multimap<string, vector<string>>& gigs )
 {
-    string tiedoston_nimi = "";
+    string file_name = "";
     vector<string> splitted;
     string artist = "";
     cout << "Give a name for input file: ";
-    getline(cin, tiedoston_nimi);
-    ifstream tiedosto_olio(tiedoston_nimi);
-    if ( not tiedosto_olio )
+    getline(cin, file_name);
+    ifstream file_temp(file_name);
+    // If file is not found:
+    if ( not file_temp )
     {
         cout << "Error: File could not be read." << endl;
         return EXIT_FAILURE;
@@ -218,9 +244,10 @@ bool read_file(multimap<string, vector<string>>& gigs )
     else
     {
         string rivi;
-        while ( getline(tiedosto_olio, rivi) )
+        while ( getline(file_temp, rivi) )
         {
             splitted = split(rivi);
+            // If some of the data columns fields are empty, stop the program:
             for(auto str : splitted)
             {
                 if(str.size() == 0)
@@ -229,23 +256,29 @@ bool read_file(multimap<string, vector<string>>& gigs )
                     return EXIT_FAILURE;
                 }
             }
+            // If there is less than four fields in data column,
+            // stop the program:
             if(splitted.size() != 4)
             {
                 cout << "Error: Invalid format in file." << endl;
                 return EXIT_FAILURE;
             }
+            // If given date is not valid, stop the program:
             else if(!is_valid_date(splitted.at(1)))
             {
                 cout << "Error: Invalid date." << endl;
                 return EXIT_FAILURE;
             }
+            // Add the artists name as key and other info as value:
             artist = splitted.at(0);
             splitted.erase(splitted.begin());
             gigs.insert({artist, splitted});
         }
-        tiedosto_olio.close();
+        file_temp.close();
     }
-    if(is_valid(gigs))
+    // If artist has double booked a gig or stage is double booked,
+    // stop the program:
+    if(is_invalid_artist(gigs) || is_invalid_stage(gigs))
     {
         return EXIT_FAILURE;
     }
@@ -254,52 +287,60 @@ bool read_file(multimap<string, vector<string>>& gigs )
     
 }
 
+// Prints every artist that is stored in the multimap:
 void print_all_artists(multimap<string,vector<string>> gigs)
 {
+    // Formatting iterators:
     multimap<string,vector<string>>::iterator artist_begin = gigs.begin();
     multimap<string,vector<string>>::iterator artist_test = gigs.begin();
-
- 
     cout << "All artists in alphabetical order:" << endl;
     cout << artist_begin->first << endl;
     while ( artist_begin != gigs.end() ) 
     {
+        // If the last key is same artist as current key, skip.
         if(artist_begin->first == artist_test->first)
         {
             ++artist_begin;
         }
+        // If not same artist, print the key.
         else
         {
             cout << artist_begin->first;
-            //for(int i = 0; i <= 2; i++)
-            //{
-            //    cout << " " << gigs_begin->second.at(i);
-            //}
             cout << endl;
             ++artist_begin;
             artist_test = artist_begin;
         }
     }
- 
-
 }
 
+// Print artists upcoming gigs in chronological order:
 void print_artist(multimap<string,vector<string>> gigs, string artist)
 {
+    // Count how many gigs are coming.
+    // If the artist is not on the multimap, print error.
     int num = gigs.count(artist);
     if(num == 0)
     {
         cout << "Error: Not found." << endl;
     }
+    // If the artist is found but has no gigs upcoming, just prints the info.
     else if(gigs.find(artist)->second.size() == 0)
     {
-
+        cout << "Artist "<< artist <<
+        " has the following gigs in the order they are listed:" 
+        << endl;
     }
     else
     {
-        multimap<string,vector<string>>::iterator artist_begin = gigs.find(artist);
-        cout << "Artist "<< artist <<" has the following gigs in the order they are listed:" << endl;
+        multimap<string,vector<string>>::iterator artist_begin
+         = gigs.find(artist);
+
+        cout << "Artist "<< artist <<
+        " has the following gigs in the order they are listed:" << endl;
         map<string, multimap<string,vector<string>>::iterator> versus;
+        // Makes new map with date being key and original multimaps iterator as
+        // value for easier print.
+        // num is the amount of gigs the artist has:
         for(int i = 0; i < num; i++)
         {
             versus.insert({artist_begin->second.at(DATE), artist_begin});
@@ -307,10 +348,14 @@ void print_artist(multimap<string,vector<string>> gigs, string artist)
             artist_begin++;
 
         }
-        map<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
+        map<string, multimap<string,vector<string>>::iterator>::iterator versus_itr
+        = versus.begin();
+        // Prints out the gigs:
         while(versus_itr != versus.end())
         {
-            cout << " - " << versus_itr->first << " : " << versus_itr->second->second.at(CITY) << ", " << versus_itr->second->second.at(STAGE) << endl;
+            cout << " - " << versus_itr->first << " : " <<
+            versus_itr->second->second.at(CITY) << ", " 
+            << versus_itr->second->second.at(STAGE) << endl;
             versus_itr++;
         }
 
@@ -319,33 +364,39 @@ void print_artist(multimap<string,vector<string>> gigs, string artist)
 
 }
 
+// Prints all stages in citys alphabetical order:
 void print_all_stages(multimap<string,vector<string>> gigs)
 {
+    // Formatting variables and iterators:
     multimap<string,vector<string>>::iterator stage_test = gigs.begin();
-
+    // Making versus multimap for easier printing:
     multimap<string, multimap<string,vector<string>>::iterator> versus;
-    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.begin();
-    
-    versus.insert({stage_test->second.at(CITY), stage_test});
-    stage_test++;
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator
+    versus_itr = versus.begin();
     while(stage_test != gigs.end())
     {
+        // If there is no current city as key, add it.
         if(versus.find(stage_test->second.at(CITY)) == versus.end() )
         {
+            // City name as key, original multimap iterator as value:
             versus.insert({stage_test->second.at(CITY), stage_test});
             stage_test++;
         }
         else
         {
+            // If the city is already found in the multimap but the stage
+            // is not, add it to the versus multimap:
             int num = versus.count(stage_test->second.at(CITY));
             for(int i = 0; i < num; i++)
             {
                 versus_itr = versus.find(stage_test->second.at(CITY));
-                if(versus_itr->second->second.at(STAGE) != stage_test->second.at(STAGE))
+                if(versus_itr->second->second.at(STAGE) 
+                != stage_test->second.at(STAGE))
                 {
                     versus.insert({stage_test->second.at(CITY), stage_test});
                     stage_test++;
                 }
+                // If same stage is found in both, skip:
                 else
                 {
                     stage_test++;
@@ -357,56 +408,117 @@ void print_all_stages(multimap<string,vector<string>> gigs)
 
     }
     cout << "All gig places in alphabetical order:" << endl;
-    
     versus_itr = versus.begin();
+    // Print all the values:
     while(versus_itr != versus.end())
     {
-        cout << versus_itr->first << ", " << versus_itr->second->second.at(STAGE) << endl;
+        cout << versus_itr->first << ", " 
+        << versus_itr->second->second.at(STAGE)
+        << endl;
         versus_itr++;
     }
 }
 
+// Print stages every upcoming artist in alphabetical order:
 void print_stage(multimap<string,vector<string>> gigs, string input)
 {
+    // Formatting variables and iterators:
     multimap<string,vector<string>>::iterator stage_test = gigs.begin();
-
     multimap<string, multimap<string,vector<string>>::iterator> versus;
-
-    
-    versus.insert({stage_test->second.at(STAGE), stage_test});
-
-    stage_test++;
     while(stage_test != gigs.end())
     {
-        
-        
-        
+        // Make new multimap for easier printing.
+        // Stage name as key:
         versus.insert({stage_test->second.at(STAGE), stage_test});
         stage_test++;
-        
-
     }
-    multimap<string, multimap<string,vector<string>>::iterator>::iterator versus_itr = versus.find(input);
+    // If our stage is not in the multimap, print error:
+    multimap<string, multimap<string,vector<string>>::iterator>::iterator 
+    versus_itr = versus.find(input);
     if(versus_itr == versus.end())
     {
         cout << "Error: Not found." << endl;
     }
+    // If stage is in multimap, print artists out:
     else
     {
         int num = versus.count(input);
-        cout << "Stage "<< versus_itr->first <<" has gigs of the following artists:" << endl;
+        cout << "Stage "<< versus_itr->first 
+        <<" has gigs of the following artists:" << endl;
         for(int i = 0;i < num; i++)
         {
             cout << " - " <<versus_itr->second->first << endl;
             versus_itr++;
         }
-
     }
 }
 
+// Adds new artist without gigs:
+void add_artist(multimap<string,vector<string>>& gigs, string artist)
+{
+    // If artist is already on map, print error:
+    if(gigs.find(artist) != gigs.end())
+    {
+        cout << "Error: Already exists." << endl;
+    }
+    else
+    {
+        gigs.insert({artist, {}});
+        cout << "Artist added." << endl;
+    }
+}
+
+// Function to add gigs for already existing artists:
+void add_gig(multimap<string,vector<string>>& gigs, string artist
+, string date, string city, string stage)
+{
+    if(gigs.find(artist) == gigs.end())
+    {
+        cout << "Error: Not found." << endl;
+    }
+    // If artist has no gigs before:
+    else if(gigs.find(artist)->second.size() == 0)
+    {
+        multimap<string,vector<string>> gigs_test = gigs;
+        multimap<string,vector<string>>::iterator test_iter = gigs_test.find(artist);
+        test_iter->second = {date, city, stage};
+        // If given date is invalid:
+        if(!is_valid_date(date))
+        {
+            cout << "Error: Invalid date." << endl;
+        }
+        // If there is no errors from stage:
+        else if(!is_invalid_stage(gigs_test))
+        {
+            gigs = gigs_test;
+            cout << "Gig added." << endl;
+        }
+    }
+    // If artist has gigs already:
+    else
+    {
+        multimap<string,vector<string>> gigs_test = gigs;
+        multimap<string,vector<string>>::iterator test_iter = gigs_test.find(artist);
+        gigs_test.insert({artist, {date, city, stage}});
+        // If given date is invalid:
+        if(!is_valid_date(date))
+        {
+            cout << "Error: Invalid date." << endl;
+        }
+        // If there is no errors from artist or stage:
+        else if(!is_invalid_artist(gigs_test) || !is_invalid_stage(gigs_test))
+        {
+            gigs = gigs_test;
+            cout << "Gig added." << endl;
+        }
+    }
+}
+
+// Main function where program checks inputs etc:
 int main()
 {
     multimap<string,vector<string>> gigs = {};
+    // If read_file gives failure, stop the program:
     if(read_file(gigs))
     {
         return EXIT_FAILURE;
@@ -414,6 +526,7 @@ int main()
 
     while(true)
     {
+        // Reads users input:
         string input = " ";
         cout << "gigs> ";
         getline(cin,input);
@@ -428,7 +541,9 @@ int main()
         }
         else if(input.find("ARTIST") == 0 || input.find("artist") == 0)
         {
+            // Uses split function to get artist name:
             vector<string> text = split(input, ' ');
+            // If user gives only one parameter, print error:
             if(text.size() < 2)
             {
                 cout << "Error: Invalid input." << endl;
@@ -445,7 +560,9 @@ int main()
 
         else if(input.find("STAGE") == 0 || input.find("stage") == 0)
         {
+            // Uses split function to get stages name:
             vector<string> text = split(input, ' ');
+            // If user gives only one parameter, print error:
             if(text.size() < 2)
             {
                 cout << "Error: Invalid input." << endl;
@@ -455,20 +572,37 @@ int main()
                 print_stage(gigs, text.at(1));
             }
         }
+        else if(input.find("ADD_ARTIST") == 0 || input.find("add_artist") == 0)
+        {
+            // Uses split function to get artists name:
+            vector<string> text = split(input, ' ');
+            // If user gives only one parameter, print error:
+            if(text.size() < 2)
+            {
+                cout << "Error: Invalid input." << endl;
+            }
+            else
+            {
+                add_artist(gigs, text.at(1));
+            }
+        }
+        else if(input.find("ADD_GIG") == 0 || input.find("add_gig") == 0)
+        {
+            // Uses split function to get artists name:
+            vector<string> text = split(input, ' ');
+            // If user gives less than four parameters, print error:
+            if(text.size() < 5)
+            {
+                cout << "Error: Invalid input." << endl;
+            }
+            else
+            {
+                add_gig(gigs, text.at(1), text.at(2), text.at(3), text.at(4));
+            }            
+        }
         else
         {
             cout << "Error: Invalid input." << endl;
         }
-
-        
-
-
     }
-
-
-    
 }
-
-
-    
-

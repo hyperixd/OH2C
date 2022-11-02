@@ -15,4 +15,3 @@ Jukka Poika;2022-06-04;Hamina;Wanha Työski
 Jukka Poika;2022-04-23;Joensuu;Kimmel
 Kyösti Mäkimattila;2022-06-09;Lappeenranta;Satamatori
 Kyösti Mäkimattila;2022-06-22;Kangasala;Kisaranta
-Elastinen;2022-06-22;Kangasala;Kisaranta
