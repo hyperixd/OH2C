@@ -429,8 +429,16 @@ void print_stage(multimap<string,vector<string>> gigs, string input)
     {
         // Make new multimap for easier printing.
         // Stage name as key:
-        versus.insert({stage_test->second.at(STAGE), stage_test});
-        stage_test++;
+        if(stage_test->second.size() == 0)
+        {
+            stage_test++;
+        }
+        else
+        {
+            versus.insert({stage_test->second.at(STAGE), stage_test});
+            stage_test++;
+        }
+        
     }
     // If our stage is not in the multimap, print error:
     multimap<string, multimap<string,vector<string>>::iterator>::iterator 
@@ -489,7 +497,7 @@ void add_gig(multimap<string,vector<string>>& gigs, string artist
             cout << "Error: Invalid date." << endl;
         }
         // If there is no errors from stage:
-        else if(!is_invalid_stage(gigs_test))
+        else if(is_invalid_stage(gigs_test))
         {
             gigs = gigs_test;
             cout << "Gig added." << endl;
@@ -506,7 +514,7 @@ void add_gig(multimap<string,vector<string>>& gigs, string artist
             cout << "Error: Invalid date." << endl;
         }
         // If there is no errors from artist or stage:
-        else if(!is_invalid_artist(gigs_test) || !is_invalid_stage(gigs_test))
+        else if(!is_invalid_artist(gigs_test) && !is_invalid_stage(gigs_test))
         {
             gigs = gigs_test;
             cout << "Gig added." << endl;
@@ -538,7 +546,7 @@ void cancel(multimap<string,vector<string>>& gigs, string artist, string date)
             // If there is still multiple artist keys:
 
             gigs_iter_test++;
-            if(gigs_iter->second.at(DATE) >= date && idx > 1)
+            if(gigs_iter->second.at(DATE) > date && idx > 1)
             {
                 gigs.erase(gigs_iter);
                 idx--;
@@ -546,7 +554,7 @@ void cancel(multimap<string,vector<string>>& gigs, string artist, string date)
                 gigs_iter = gigs_iter_test;
             }
             // If there is only one key left:
-            else if(gigs_iter->second.at(DATE) >= date)
+            else if(gigs_iter->second.at(DATE) > date)
             {
                 gigs_iter->second = {};
             }
@@ -558,7 +566,7 @@ void cancel(multimap<string,vector<string>>& gigs, string artist, string date)
                 idx_2++;
             }
         }
-        if(idx_2 == 0)
+        if(idx_2 == num)
         {
             cout << "Error: No gigs after the given date." << endl;
         }
