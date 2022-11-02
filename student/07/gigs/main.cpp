@@ -196,7 +196,12 @@ bool is_invalid_stage(multimap<string, vector<string>> gigs)
         if(versus_iter->first == versus_test->first)
         {
             //If the date is not in the day vector, add it there:
-            if(find(day.begin(), day.end(), 
+            if(versus_iter->second->second.at(DATE) == versus_test->second->second.at(DATE))
+            {
+                cout << "Error: Already exists." << endl;
+                return EXIT_FAILURE;
+            }
+            else if(find(day.begin(), day.end(), 
             versus_iter->second->second.at(DATE)) == day.end())
             {
                 day.push_back(versus_test->second->second.at(DATE));
@@ -376,7 +381,11 @@ void print_all_stages(multimap<string,vector<string>> gigs)
     while(stage_test != gigs.end())
     {
         // If there is no current city as key, add it.
-        if(versus.find(stage_test->second.at(CITY)) == versus.end() )
+        if(stage_test->second.size() == 0)
+        {
+            stage_test++;
+        }
+        else if(versus.find(stage_test->second.at(CITY)) == versus.end() )
         {
             // City name as key, original multimap iterator as value:
             versus.insert({stage_test->second.at(CITY), stage_test});
