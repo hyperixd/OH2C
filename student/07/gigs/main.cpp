@@ -472,6 +472,7 @@ void add_artist(multimap<string,vector<string>>& gigs, string artist)
 void add_gig(multimap<string,vector<string>>& gigs, string artist
 , string date, string city, string stage)
 {
+    // If artist is not on the list:
     if(gigs.find(artist) == gigs.end())
     {
         cout << "Error: Not found." << endl;
@@ -498,7 +499,6 @@ void add_gig(multimap<string,vector<string>>& gigs, string artist
     else
     {
         multimap<string,vector<string>> gigs_test = gigs;
-        multimap<string,vector<string>>::iterator test_iter = gigs_test.find(artist);
         gigs_test.insert({artist, {date, city, stage}});
         // If given date is invalid:
         if(!is_valid_date(date))
@@ -510,6 +510,61 @@ void add_gig(multimap<string,vector<string>>& gigs, string artist
         {
             gigs = gigs_test;
             cout << "Gig added." << endl;
+        }
+    }
+}
+// Cancels every
+void cancel(multimap<string,vector<string>>& gigs, string artist, string date)
+{
+    // If artist is not on the list:
+    if(gigs.find(artist) == gigs.end())
+    {
+        cout << "Error: Not found." << endl;
+    }
+    else if(!is_valid_date(date))
+    {
+        cout << "Error: Invalid date." << endl;
+    }
+    else
+    {
+        int num = gigs.count(artist);
+        int idx = num;
+        int idx_2 = 0;
+        multimap<string,vector<string>>::iterator gigs_iter = gigs.find(artist);
+        multimap<string,vector<string>>::iterator gigs_iter_test = gigs_iter;
+
+        for(int i = 0; i < num; i++)
+        {
+            // If there is still multiple artist keys:
+
+            gigs_iter_test++;
+            if(gigs_iter->second.at(DATE) >= date && idx > 1)
+            {
+                gigs.erase(gigs_iter);
+                idx--;
+                // Giving the old iterator next value:
+                gigs_iter = gigs_iter_test;
+            }
+            // If there is only one key left:
+            else if(gigs_iter->second.at(DATE) >= date)
+            {
+                gigs_iter->second = {};
+            }
+            else
+            {
+                // Going to next iterator:
+                gigs_iter++;
+                gigs_iter_test = gigs_iter;
+                idx_2++;
+            }
+        }
+        if(idx_2 == 0)
+        {
+            cout << "Error: No gigs after the given date." << endl;
+        }
+        else
+        {
+            cout << "Artist's gigs after the given date cancelled." << endl;
         }
     }
 }
@@ -599,6 +654,20 @@ int main()
             {
                 add_gig(gigs, text.at(1), text.at(2), text.at(3), text.at(4));
             }            
+        }
+        else if(input.find("CANCEL") == 0 || input.find("cancel") == 0)
+        {
+            // Uses split function to get artists name:
+            vector<string> text = split(input, ' ');
+            // If user gives less than two parameters, print error:
+            if(text.size() < 3)
+            {
+                cout << "Error: Invalid input." << endl;
+            }
+            else
+            {
+                cancel(gigs, text.at(1), text.at(2));
+            }
         }
         else
         {
