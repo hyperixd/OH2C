@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+using namespace std;
+
 const std::string HELP_TEXT = "N                  = List ordered by student numbers\n"
                               "U                  = List ordered alphabetically by user ids\n"
                               "C <student_number> = Change the given student's phone number\n"
