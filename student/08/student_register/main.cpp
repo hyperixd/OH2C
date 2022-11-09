@@ -92,6 +92,44 @@ bool is_valid_phone_number(const std::string number) {
     return true;
 }
 
+void write_file(map< std::string, Student* > user_ids, string filename)
+{
+    ofstream output_file;
+    output_file.open(filename);
+    map< std::string, Student* >::iterator iter = user_ids.begin();
+    while(iter != user_ids.end())
+    {
+
+        output_file << iter->second->student_number << ";" << iter->second->user_id << ";" << iter->second->name <<
+        ";" << iter->second->phone_number << ";" << iter->second->email << ";" << iter->second->skype << endl;
+
+        iter++;
+    }
+
+    output_file.close();
+}
+
+
+bool change_number(std::map< std::string, Student* >& student_numbers, string student_num)
+{
+    string phone_num;
+    cout << "Enter a new phone number: ";
+    getline(cin, phone_num);
+    cout << endl;
+    if(is_valid_phone_number(phone_num))
+    {
+        student_numbers[student_num]->phone_number = phone_num;
+        return true;
+        
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
+
 
 int main() {
     std::string file_name = "";
@@ -145,6 +183,15 @@ int main() {
             if(parts.size() != 2){
                 std::cout << "Erroneous parameters!" << std::endl << HELP_TEXT;
                 continue;
+            }
+            else if(student_numbers.find(parts.at(1)) == student_numbers.end())
+            {
+                cout << "There is no student with the given number!" << endl << endl;
+                
+            }
+            else if(change_number(student_numbers, parts.at(1)))
+            {
+                write_file(user_ids, file_name);
             }
             // TODO: Add functionality here
 
