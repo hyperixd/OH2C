@@ -13,7 +13,8 @@ int greatest_v1(int *itemptr, int size)
 
 int greatest_v2(int *itemptr, int *endptr)
 {
-    endptr-=1;
+    endptr--;
+    *itemptr = *itemptr;
     return *endptr;
 }
 
