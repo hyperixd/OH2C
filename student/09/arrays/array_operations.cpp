@@ -3,19 +3,32 @@
 int greatest_v1(int *itemptr, int size)
 {
     int test = 1;
+    int largest = *itemptr;
     while(test < size)
     {
+
         itemptr++;
+        if(largest < *itemptr)
+        {
+            largest = *itemptr;
+        }
         test++;
     }
-    return *itemptr;
+    return largest;
 }
 
 int greatest_v2(int *itemptr, int *endptr)
 {
-    endptr--;
-    *itemptr = *itemptr;
-    return *endptr;
+    int largest = *itemptr;
+    while(itemptr != endptr - 1)
+    {
+        itemptr++;
+        if(largest < *itemptr)
+        {
+            largest = *itemptr;
+        }
+    }
+    return largest;
 }
 
 void copy(int *itemptr, int *endptr, int *targetptr)
